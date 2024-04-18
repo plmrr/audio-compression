@@ -13,8 +13,15 @@ def dct_from_scratch(signal):
 
 
 def idct_from_scratch(X):
-    pass
+    N = len(X)
+    x = np.zeros(N)
 
+    for n in range(N):
+        sum_val = X[0] / 2
+        for k in range(1, N):
+            sum_val += X[k] * np.cos(np.pi * k * (n + 0.5) / N)
+        x[n] = sum_val * 2 / N
+    return x
 
 def dft(signal):
     N = len(signal)
