@@ -45,5 +45,23 @@ def idft(X):
     return x / N
 
 
+def lagrange_approximation(signal, degree):
+    N = len(signal)
+    indices = np.linspace(0, N-1, degree+1).astype(int)
+    approx_signal = lagrange_interpolation(indices, signal[indices], np.arange(N))
+    return approx_signal
+
+def lagrange_interpolation(x, y, xi):
+    n = len(x)
+    yi = np.zeros_like(xi, dtype=np.float64)
+    for i in range(n):
+        L = np.ones_like(xi, dtype=np.float64)
+        for j in range(n):
+            if i != j:
+                L *= (xi - x[j]) / (x[i] - x[j])
+        yi += y[i] * L
+    return yi
+
+
 if __name__ == "__main__":
     print("Nothing to show here...")

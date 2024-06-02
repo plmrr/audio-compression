@@ -4,9 +4,8 @@ import soundfile as sf
 import librosa
 
 
-# Generati
 def generate_signal(signal_type='sine', frequency=5, amplitude=1, sample_rate=100):
-    t = np.linspace(0, 1, num=sample_rate, endpoint=False)
+    t = np.linspace(0, 0.25, num=sample_rate, endpoint=False)
     if signal_type == 'sine':
         return amplitude * np.sin(2 * np.pi * frequency * t)
     elif signal_type == 'square':
@@ -42,19 +41,20 @@ def plot_signals(original, transformed, compressed, reconstructed, sample_rate, 
     axs[0].set_xlabel('Time [s]', fontsize=8)
     axs[0].set_ylabel('Amplitude', fontsize=8)
 
-    # Transformed signal (DCT/DFT)
-    axs[1].plot(np.abs(transformed) if method == 'DFT' else transformed)
+    # First half of the transformed signal (DCT/DFT/LAGRANGE)
+    half_len = len(transformed) // 2
+    axs[1].plot(np.abs(transformed[:half_len]) if method in ('DCT', 'LAGRANGE') else transformed[:half_len])
     axs[1].set_title(f'{method} of the Signal')
     axs[1].set_xlabel('Frequency Bins', fontsize=8)
     axs[1].set_ylabel('Magnitude', fontsize=8)
 
-    # Compressed signal
-    axs[2].stem(np.abs(compressed) if method == 'DFT' else compressed)
+    # First half of the compressed signal
+    axs[2].stem(np.abs(compressed[:half_len]) if method in ('DCT', 'LAGRANGE') else compressed[:half_len])
     axs[2].set_title(f'{method} Spectrum after Compression', fontsize=10)
     axs[2].set_xlabel('Frequency Bins', fontsize=8)
     axs[2].set_ylabel('Magnitude', fontsize=8)
 
-    # Reconstruced signal after compression
+    # Reconstructed signal after compression
     axs[3].plot(t_reconstructed, reconstructed, linewidth=0.7)
     axs[3].set_title('Reconstructed Signal', fontsize=10)
     axs[3].set_xlabel('Time [s]', fontsize=8)
@@ -62,6 +62,7 @@ def plot_signals(original, transformed, compressed, reconstructed, sample_rate, 
 
     plt.tight_layout()
     plt.show()
+
 
 
 # Compressing signal

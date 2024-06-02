@@ -1,7 +1,6 @@
 from tools import generate_signal, measure_parameters, plot_signals, compress_signal, mean_squared_error, load_signal_from_file, save_compressed_signal
-from algorithms import dct_from_scratch, idct_from_scratch, dft, idft
+from algorithms import dct_from_scratch, idct_from_scratch, dft, idft, lagrange_approximation, lagrange_interpolation
 import numpy as np
-
 
 def main():
     choice = input("Do you want to 'load' a signal from a file or 'generate' one? (load/generate): ").lower()
@@ -10,7 +9,6 @@ def main():
         signal_type = input("Please enter signal type ('sine' 'triangle' 'square' 'sawtooth' 'random') : ")
         frequency = int(input("Please enter frequency : "))
         amplitude = int(input("Please enter amplitude : "))
-        threshold_percent = float(input("Please enter compression threshold in %: ")) / 100
         signal = generate_signal(signal_type, frequency, amplitude, sample_rate)
     elif choice == 'load':
         file_path = input("Please enter the path to the audio file: ")
@@ -19,7 +17,7 @@ def main():
             signal = signal.mean(axis=1)
 
     # Process signal
-    method = input("Please choose method ('DCT', 'DFT'): ").upper()
+    method = input("Please choose method ('DCT', 'DFT', 'LAGRANGE'): ").upper()
     threshold_percent = float(input("Please enter compression threshold in %: ")) / 100
     if method == 'DCT':
         transformed_signal = dct_from_scratch(signal)
@@ -31,8 +29,13 @@ def main():
         threshold_value = threshold_percent * np.max(np.abs(transformed_signal))
         compressed_signal = compress_signal(transformed_signal, threshold_value)
         reconstructed_signal = idft(compressed_signal)
+    elif method == 'LAGRANGE':
+        degree = int(input("Please enter the degree of the Lagrange polynomial: "))
+        transformed_signal = signal
+        compressed_signal = lagrange_approximation(signal, degree)
+        reconstructed_signal = compressed_signal
     else:
-        raise ValueError("Invalid method! Available methods: 'DCT', 'DFT'.")
+        raise ValueError("Invalid method! Available methods: 'DCT', 'DFT', 'LAGRANGE'.")
 
     # Measure parameters before transformation
     original_params = measure_parameters(signal)
@@ -63,3 +66,22 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # TODO
+    # POPRAWKI:
+    # - zaimplementowac wielomiany lagranga
+    # - usunac aliasing (wykres do 1/2 sample rate) - Done
+    # - opisac OFDM lepiej
+    # - napisac cos o aliasingu
+    # - dodac jeszcze jakis opis o kompresji
+    # - dodac przypisy do bibliografii
+
+    # SPRAWKO:
+    # - wstep - nieformalny opis rozwazanego problemu, wraz z odniesieniemai literaturowymi
+    # - opis konstrukcji i interpretacja algorytmow rozwazanych w realizacji projektu
+    # - dyskusja przykladowych zastosowan omawianych technik
+    # - realizacja i opis przykladow numerycznych algorytmow (wyniki)
+    # - dyskusja wad i zalet rozwazanych technik
+
+    # PREZKA:
+    # - na temat technik i algorytmow omawianych w projekcie (dct, dft, wielomiany lagrangea)
