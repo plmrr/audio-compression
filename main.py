@@ -3,7 +3,6 @@ from algorithms import dct_from_scratch, idct_from_scratch, dft, idft, lagrange_
 import numpy as np
 
 def main():
-    """
     choice = input("Do you want to 'load' a signal from a file or 'generate' one? (load/generate): ").lower()
     if choice == 'generate':
         sample_rate = int(input("Please enter sample rate : "))
@@ -20,18 +19,6 @@ def main():
     # Process signal
     method = input("Please choose method ('DCT', 'DFT', 'LAGRANGE'): ").upper()
     threshold_percent = float(input("Please enter compression threshold in %: ")) / 100
-    """
-
-    # DEBUG
-    choice = 'generate'
-    sample_rate = 300
-    signal_type = 'random'
-    frequency = 10
-    amplitude = 1
-    signal = generate_signal(signal_type, frequency, amplitude, sample_rate)
-    method = 'DFT'
-    threshold_percent = 45 / 100
-
 
     if method == 'DCT':
         transformed_signal = dct_from_scratch(signal)
@@ -70,6 +57,7 @@ def main():
         # Measure parameters after reconstruction
         reconstructed_params = measure_parameters(reconstructed_signal)
         print(f"Interpolated signal parameters: Mean = {reconstructed_params[0]:.2f}, Variance = {reconstructed_params[1]:.2f}, Peak-to-Peak = {reconstructed_params[2]:.2f}")
+    
     # Measure MSE 
     mse_value = round(mean_squared_error(signal, reconstructed_signal), 4)
     print(f"Mean Squared Error (MSE): {mse_value}")
