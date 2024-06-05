@@ -9,6 +9,7 @@ def dct_from_scratch(signal):
         for n in range(N):
             sum_val += signal[n] * np.cos(np.pi * k * (n + 0.5) / N)
         X[k] = sum_val
+    np.arange(len(X)) * (N / (2.0 * N))
     return X
 
 
@@ -22,6 +23,7 @@ def idct_from_scratch(X):
             sum_val += X[k] * np.cos(np.pi * k * (n + 0.5) / N)
         x[n] = sum_val * 2 / N
     return x
+
 
 def dft(signal):
     N = len(signal)
@@ -47,9 +49,10 @@ def idft(X):
 
 def lagrange_approximation(signal, degree):
     N = len(signal)
-    indices = np.linspace(0, N-1, degree+1).astype(int)
+    indices = np.linspace(0, N-1, num=degree).astype(int)
     approx_signal = lagrange_interpolation(indices, signal[indices], np.arange(N))
     return approx_signal
+
 
 def lagrange_interpolation(x, y, xi):
     n = len(x)
@@ -57,7 +60,7 @@ def lagrange_interpolation(x, y, xi):
     for i in range(n):
         L = np.ones_like(xi, dtype=np.float64)
         for j in range(n):
-            if i != j:
+            if (i != j) & (j != 0):
                 L *= (xi - x[j]) / (x[i] - x[j])
         yi += y[i] * L
     return yi
